@@ -1,17 +1,19 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PeersHUB — Student Accommodation Platform</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="app">
 
-    <header>
+    <!-- Header Row: Logo + Action Buttons -->
+    <div class="header-row">
       <div class="brand">
-        <!-- Added PeersHUB logo and updated branding -->
         <img src="./peershublogo.png" alt="PeersHUB Logo" class="logo-img">
         <div>
           <h1>PeersHUB</h1>
@@ -19,9 +21,22 @@
         </div>
       </div>
 
-      <div class="controls">
+      <div class="header-controls">
+        <button class="btn" id="newListingBtn">+ List Property</button>
+        <button class="btn secondary" id="loginBtn">Sign In</button>
+      </div>
+    </div>
+
+    <!-- Filters Section - Now in Center -->
+    <div class="filters-section">
+      <!-- Search Row -->
+      <div class="search-row">
         <div class="search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="#5DADE2" stroke-width="1.6"></circle></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21l-4.35-4.35" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round"></path>
+            <circle cx="11" cy="11" r="6" stroke="#5DADE2" stroke-width="1.6"></circle>
+          </svg>
           <input id="q" placeholder="Search city, area, college..." />
           <select id="kind">
             <option value="all">All Types</option>
@@ -32,69 +47,64 @@
             <option value="studio">Studio Apartment</option>
           </select>
         </div>
-        <button class="btn" id="newListingBtn">+ List Property</button>
-        <button class="btn secondary" id="loginBtn">Sign In</button>
       </div>
-    </header>
 
-    <main class="grid">
-      <aside class="panel filters">
-        <h3>Accommodation Type</h3>
-        <div class="category" id="categoryList">
-          <button class="chip active" data-kind="all">All Types</button>
-          <button class="chip" data-kind="pg_boys">Boys PG</button>
-          <button class="chip" data-kind="pg_girls">Girls PG</button>
-          <button class="chip" data-kind="hostel">Student Hostel</button>
-          <button class="chip" data-kind="flat_share">Flat Share</button>
-          <button class="chip" data-kind="studio">Studio Apartment</button>
-        </div>
-
-        <hr style="margin:14px 0;border:none;border-top:1px solid #e2e8f0">
-        <h3>Monthly Budget (₹)</h3>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <input id="minPrice" type="number" placeholder="Min" style="width: 50%;" />
-          <input id="maxPrice" type="number" placeholder="Max" style="width: 50%;" />
-        </div>
-
-        <hr style="margin:14px 0;border:none;border-top:1px solid #e2e8f0">
-        <h3>Gender Preference</h3>
-        <div class="category">
-          <button class="chip" data-gender="boys">Boys Only</button>
-          <button class="chip" data-gender="girls">Girls Only</button>
-        </div>
-
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button class="btn" id="applyFilters">Apply</button>
-          <button class="btn secondary" id="resetFilters">Reset</button>
-        </div>
-
-        <div style="margin-top:18px">
-          <p class="muted">💡 Tip: Click any listing to view details, photos, and contact the owner directly.</p>
-        </div>
-      </aside>
-
-      <section>
-        <div class="panel" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <h2 style="margin:0">Available Accommodations</h2>
-            <p class="muted" id="resultsInfo">Showing 0 results</p>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <label class="muted">Sort by</label>
-            <select id="sort">
-              <option value="newest">Newest First</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-            </select>
+      <!-- Filter Grid -->
+      <div class="filter-grid">
+        <div class="filter-group">
+          <h3>Accommodation Type</h3>
+          <div class="category" id="categoryList">
+            <button class="chip active" data-kind="all">All Types</button>
+            <button class="chip" data-kind="pg_boys">Boys PG</button>
+            <button class="chip" data-kind="pg_girls">Girls PG</button>
+            <button class="chip" data-kind="hostel">Hostel</button>
+            <button class="chip" data-kind="flat_share">Flat Share</button>
+            <button class="chip" data-kind="studio">Studio</button>
           </div>
         </div>
 
-        <div class="listings" id="listings"></div>
+        <div class="filter-group">
+          <h3>Monthly Budget (₹)</h3>
+          <div class="price-inputs">
+            <input id="minPrice" type="number" placeholder="Min" style="width: 50%;" />
+            <input id="maxPrice" type="number" placeholder="Max" style="width: 50%;" />
+          </div>
+        </div>
 
-        <!-- Updated footer with PeersHUB branding -->
-        <footer>© <span id="year"></span> PeersHUB — Connecting students with perfect accommodations.</footer>
-      </section>
-    </main>
+        <div class="filter-group">
+          <h3>Gender Preference</h3>
+          <div class="category">
+            <button class="chip" data-gender="boys">Boys Only</button>
+            <button class="chip" data-gender="girls">Girls Only</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn" id="applyFilters">Apply Filters</button>
+        <button class="btn secondary" id="resetFilters">Reset</button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-header">
+      <div>
+        <h2>Available Accommodations</h2>
+        <p class="muted" id="resultsInfo">Showing 0 results</p>
+      </div>
+      <div class="sort-control">
+        <label class="muted">Sort by</label>
+        <select id="sort">
+          <option value="newest">Newest First</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="listings" id="listings"></div>
+
+    <footer>© <span id="year"></span> PeersHUB — Connecting students with perfect accommodations.</footer>
 
     <!-- modal for listing details / booking -->
     <div class="modal-backdrop" id="modal">
@@ -205,13 +215,15 @@
 
           <div style="margin-top:8px">
             <label>Property Images</label>
-            <input type="file" name="images" accept="image/*" multiple style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;width:100%" />
+            <input type="file" name="images" accept="image/*" multiple
+              style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;width:100%" />
             <p class="muted" style="margin-top:4px">Upload up to 5 images of your property (JPG, PNG)</p>
           </div>
 
           <div style="margin-top:8px">
             <label>Description & Amenities</label>
-            <textarea name="desc" placeholder="Describe your property, nearby colleges, amenities like WiFi, meals, AC, etc."></textarea>
+            <textarea name="desc"
+              placeholder="Describe your property, nearby colleges, amenities like WiFi, meals, AC, etc."></textarea>
           </div>
 
           <div style="margin-top:8px;display:flex;gap:8px">
@@ -226,5 +238,5 @@
 
   <script src="script.js"></script>
 </body>
-</html>
 
+</html>
