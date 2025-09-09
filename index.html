@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PeersHUB — Student Accommodation Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+
+    <header>
+      <div class="brand">
+        <!-- Added PeersHUB logo and updated branding -->
+        <img src="./peershublogo.png" alt="PeersHUB Logo" class="logo-img">
+        <div>
+          <h1>PeersHUB</h1>
+          <p class="lead">Find perfect PGs, hostels, and student accommodations</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="#5DADE2" stroke-width="1.6"></circle></svg>
+          <input id="q" placeholder="Search city, area, college..." />
+          <select id="kind">
+            <option value="all">All Types</option>
+            <option value="pg_boys">Boys PG</option>
+            <option value="pg_girls">Girls PG</option>
+            <option value="hostel">Student Hostel</option>
+            <option value="flat_share">Flat Share</option>
+            <option value="studio">Studio Apartment</option>
+          </select>
+        </div>
+        <button class="btn" id="newListingBtn">+ List Property</button>
+        <button class="btn secondary" id="loginBtn">Sign In</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <aside class="panel filters">
+        <h3>Accommodation Type</h3>
+        <div class="category" id="categoryList">
+          <button class="chip active" data-kind="all">All Types</button>
+          <button class="chip" data-kind="pg_boys">Boys PG</button>
+          <button class="chip" data-kind="pg_girls">Girls PG</button>
+          <button class="chip" data-kind="hostel">Student Hostel</button>
+          <button class="chip" data-kind="flat_share">Flat Share</button>
+          <button class="chip" data-kind="studio">Studio Apartment</button>
+        </div>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid #e2e8f0">
+        <h3>Monthly Budget (₹)</h3>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input id="minPrice" type="number" placeholder="Min" />
+          <input id="maxPrice" type="number" placeholder="Max" />
+        </div>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid #e2e8f0">
+        <h3>Gender Preference</h3>
+        <div class="category">
+          <button class="chip" data-gender="boys">Boys Only</button>
+          <button class="chip" data-gender="girls">Girls Only</button>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn" id="applyFilters">Apply</button>
+          <button class="btn secondary" id="resetFilters">Reset</button>
+        </div>
+
+        <div style="margin-top:18px">
+          <p class="muted">💡 Tip: Click any listing to view details, photos, and contact the owner directly.</p>
+        </div>
+      </aside>
+
+      <section>
+        <div class="panel" style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <h2 style="margin:0">Available Accommodations</h2>
+            <p class="muted" id="resultsInfo">Showing 0 results</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label class="muted">Sort by</label>
+            <select id="sort">
+              <option value="newest">Newest First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="listings" id="listings"></div>
+
+        <!-- Updated footer with PeersHUB branding -->
+        <footer>© <span id="year"></span> PeersHUB — Connecting students with perfect accommodations.</footer>
+      </section>
+    </main>
+
+    <!-- modal for listing details / booking -->
+    <div class="modal-backdrop" id="modal">
+      <div class="modal" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 id="modalTitle">Title</h3>
+          <button id="closeModal" class="btn secondary">Close</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <img id="modalImg" src="/placeholder.svg" alt="" style="width:40%;border-radius:10px;object-fit:cover">
+          <div style="flex:1">
+            <p id="modalDesc" class="muted"></p>
+            <p style="margin:8px 0"><strong>Monthly Rent: </strong><span id="modalPrice" class="price"></span></p>
+            <div id="modalAmenities" style="margin:8px 0"></div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="bookBtn" class="btn">Contact Owner</button>
+              <button id="messageBtn" class="btn secondary">Schedule Visit</button>
+            </div>
+          </div>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #e2e8f0">
+
+        <div id="bookingArea" style="display:none">
+          <h4 style="margin:0 0 8px 0">Contact Details</h4>
+          <div class="form-row">
+            <div class="field">
+              <label>Your Name</label>
+              <input id="bookName" type="text" placeholder="Full name" />
+            </div>
+            <div class="field">
+              <label>Phone Number</label>
+              <input id="bookPhone" type="text" placeholder="Contact number" />
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:8px">
+            <div class="field">
+              <label>College/University</label>
+              <input id="bookCollege" type="text" placeholder="Your college name" />
+            </div>
+            <div class="field">
+              <label>Course/Year</label>
+              <input id="bookCourse" type="text" placeholder="e.g. B.Tech 2nd Year" />
+            </div>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button id="confirmBook" class="btn">Send Inquiry</button>
+            <button id="cancelBook" class="btn secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- listing form modal -->
+    <div class="modal-backdrop" id="formModal">
+      <div class="modal" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 id="formTitle">List Your Property</h3>
+          <button id="closeForm" class="btn secondary">Close</button>
+        </div>
+        <form id="listingForm" style="margin-top:12px">
+          <div class="form-row">
+            <div class="field">
+              <label>Property Title</label>
+              <input name="title" required placeholder="e.g. Spacious Boys PG near IIT Delhi" />
+            </div>
+            <div class="field">
+              <label>Accommodation Type</label>
+              <select name="kind">
+                <option value="pg_boys">Boys PG</option>
+                <option value="pg_girls">Girls PG</option>
+                <option value="hostel">Student Hostel</option>
+                <option value="flat_share">Flat Share</option>
+                <option value="studio">Studio Apartment</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:8px" class="form-row">
+            <div class="field">
+              <label>Location</label>
+              <input name="location" required placeholder="e.g. Malviya Nagar, New Delhi" />
+            </div>
+            <div class="field">
+              <label>Monthly Rent (₹)</label>
+              <input name="price" type="number" required placeholder="e.g. 12000" />
+            </div>
+          </div>
+
+          <div style="margin-top:8px" class="form-row">
+            <div class="field">
+              <label>Gender Preference</label>
+              <select name="gender">
+                <option value="boys">Boys Only</option>
+                <option value="girls">Girls Only</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Room Type</label>
+              <select name="roomType">
+                <option value="single">Single Occupancy</option>
+                <option value="double">Double Sharing</option>
+                <option value="triple">Triple Sharing</option>
+                <option value="dormitory">Dormitory</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:8px">
+            <label>Property Images</label>
+            <input type="file" name="images" accept="image/*" multiple style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;width:100%" />
+            <p class="muted" style="margin-top:4px">Upload up to 5 images of your property (JPG, PNG)</p>
+          </div>
+
+          <div style="margin-top:8px">
+            <label>Description & Amenities</label>
+            <textarea name="desc" placeholder="Describe your property, nearby colleges, amenities like WiFi, meals, AC, etc."></textarea>
+          </div>
+
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" type="submit">Publish Listing</button>
+            <button class="btn secondary" type="button" id="clearForm">Clear Form</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
