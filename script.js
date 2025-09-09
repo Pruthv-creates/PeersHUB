@@ -1,76 +1,160 @@
 // --- Sample student accommodation data ---
+const mumbaiData = {
+  colleges: [
+    { name: "Thadomal Shahani Engineering College (TSEC)", area: "Bandra (W)", station: "Bandra Station (W)" },
+    { name: "IIT Bombay", area: "Powai", station: "Kanjurmarg / Vikhroli" },
+    { name: "VJTI", area: "Matunga", station: "Matunga / Dadar" },
+    { name: "Institute of Chemical Technology (ICT)", area: "Matunga", station: "Matunga / Dadar" },
+    { name: "NMIMS Mukesh Patel", area: "Vile Parle", station: "Vile Parle Station" },
+    { name: "SPIT", area: "Andheri W", station: "Andheri Station" },
+    { name: "DJ Sanghvi", area: "Vile Parle W", station: "Vile Parle Station" },
+    { name: "KJ Somaiya", area: "Vidyavihar", station: "Vidyavihar Station" },
+    { name: "VESIT", area: "Chembur", station: "Chembur Station" },
+    { name: "M.H. Saboo Siddik", area: "Byculla", station: "Byculla Station" },
+    { name: "Fr. CRCE", area: "Bandra Bandstand", station: "Bandra Station" },
+    { name: "Pillai College of Engineering", area: "Panvel", station: "Panvel Station" },
+    { name: "Bharati Vidyapeeth", area: "Kharghar", station: "Kharghar Station" },
+    { name: "SFIT", area: "Borivali", station: "Borivali Station" },
+    { name: "VidyaVardhini", area: "Vasai", station: "Vasai Road Station" },
+    { name: "SIES GST", area: "Nerul", station: "Nerul Station" },
+    { name: "Don Bosco Institute of Tech", area: "Kurla", station: "Kurla Station" },
+    { name: "KC College of Engineering", area: "Thane E", station: "Thane Station" },
+    { name: "A. P. Shah Institute", area: "Thane", station: "Thane Station" },
+    { name: "Lokmanya Tilak COE", area: "Kopar Khairane", station: "Kopar Khairane Station" },
+  ],
+  areas: [
+    "Bandra",
+    "Andheri",
+    "Powai",
+    "Matunga",
+    "Vile Parle",
+    "Chembur",
+    "Thane",
+    "Borivali",
+    "Kurla",
+    "Dadar",
+    "Nerul",
+    "Kharghar",
+    "Panvel",
+    "Vasai",
+    "Vidyavihar",
+    "Byculla",
+    "Kopar Khairane",
+    "Kanjurmarg",
+    "Vikhroli",
+    "Goregaon",
+    "Malad",
+    "Kandivali",
+    "Jogeshwari",
+    "Santa Cruz",
+    "Khar",
+    "Mahim",
+    "Lower Parel",
+    "Worli",
+    "Colaba",
+    "Fort",
+    "Churchgate",
+  ],
+  stations: [
+    "Bandra Station",
+    "Andheri Station",
+    "Vile Parle Station",
+    "Matunga Station",
+    "Dadar Station",
+    "Chembur Station",
+    "Thane Station",
+    "Borivali Station",
+    "Kurla Station",
+    "Vidyavihar Station",
+    "Nerul Station",
+    "Kharghar Station",
+    "Panvel Station",
+    "Vasai Road Station",
+    "Byculla Station",
+    "Kopar Khairane Station",
+    "Kanjurmarg Station",
+    "Vikhroli Station",
+    "Goregaon Station",
+    "Malad Station",
+    "Kandivali Station",
+    "Jogeshwari Station",
+    "Santa Cruz Station",
+    "Khar Station",
+  ],
+}
+
 const listingsData = [
   {
     id: 1,
-    title: "Premium Boys PG near DU North Campus",
+    title: "Premium Boys PG near IIT Bombay",
     kind: "pg_boys",
-    location: "Kamla Nagar, Delhi",
-    price: 15000,
-    desc: "Fully furnished PG with AC, WiFi, meals included. 5 min walk to DU.",
+    location: "Powai, Mumbai",
+    price: 18000,
+    desc: "Fully furnished PG with AC, WiFi, meals included. Walking distance to IIT Bombay.",
     img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=60",
     gender: "boys",
     amenities: ["WiFi", "AC", "Meals", "Laundry", "Security"],
-    distance: "0.5 km from DU North Campus",
+    distance: "0.8 km from IIT Bombay",
   },
   {
     id: 2,
-    title: "Girls PG - Safe & Secure near Pune University",
+    title: "Girls PG - Safe & Secure near VJTI",
     kind: "pg_girls",
-    location: "Aundh, Pune",
-    price: 12000,
+    location: "Matunga, Mumbai",
+    price: 16000,
     desc: "Ladies PG with 24/7 security, home-cooked meals, and study room.",
     img: "https://images.unsplash.com/photo-1560449739-6bfa9b6c4f20?auto=format&fit=crop&w=800&q=60",
     gender: "girls",
     amenities: ["WiFi", "Meals", "Security", "Study Room", "CCTV"],
-    distance: "1 km from Pune University",
+    distance: "0.5 km from VJTI",
+  },
+  {
+    id: 3,
+    title: "Modern Boys PG near NMIMS",
+    kind: "pg_boys",
+    location: "Vile Parle, Mumbai",
+    price: 17000,
+    desc: "Contemporary PG with modern amenities for NMIMS students.",
+    img: "https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=800&q=60",
+    gender: "boys",
+    amenities: ["WiFi", "AC", "Meals", "Gym", "Study Area"],
+    distance: "0.3 km from NMIMS",
   },
   {
     id: 4,
-    title: "Affordable Boys PG near IIT Bombay",
-    kind: "pg_boys",
-    location: "Powai, Mumbai",
-    price: 14000,
-    desc: "Budget-friendly PG for engineering students. Close to IIT Bombay.",
-    img: "https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=800&q=60",
-    gender: "boys",
-    amenities: ["WiFi", "Meals", "Study Area", "Parking"],
-    distance: "0.8 km from IIT Bombay",
-  },
-  {
-    id: 5,
     title: "Luxury Girls PG - Premium Amenities",
     kind: "pg_girls",
-    location: "Sector 62, Noida",
-    price: 20000,
+    location: "Bandra, Mumbai",
+    price: 22000,
     desc: "Premium girls PG with swimming pool, gym, and spa facilities.",
     img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=60",
     gender: "girls",
     amenities: ["WiFi", "AC", "Pool", "Gym", "Spa", "Meals"],
-    distance: "1.5 km from Amity University",
+    distance: "0.7 km from TSEC",
   },
   {
-    id: 8,
-    title: "Budget Boys PG near Jamia University",
+    id: 5,
+    title: "Budget Boys PG near Thane Station",
     kind: "pg_boys",
-    location: "Jamia Nagar, Delhi",
-    price: 9000,
+    location: "Thane, Mumbai",
+    price: 12000,
     desc: "Affordable accommodation for students with basic amenities.",
     img: "https://images.unsplash.com/photo-1560448075-bb485b067938?auto=format&fit=crop&w=800&q=60",
     gender: "boys",
     amenities: ["WiFi", "Meals", "Study Room", "Security"],
-    distance: "0.3 km from Jamia Millia Islamia",
+    distance: "0.5 km from KC College of Engineering",
   },
   {
-    id: 9,
+    id: 6,
     title: "Girls Hostel - University Approved",
     kind: "hostel",
-    location: "Anna Nagar, Chennai",
-    price: 13000,
+    location: "Andheri, Mumbai",
+    price: 15000,
     desc: "University approved girls hostel with mess and library facilities.",
     img: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=60",
     gender: "girls",
     amenities: ["WiFi", "Mess", "Library", "Security", "CCTV"],
-    distance: "1.2 km from Anna University",
+    distance: "0.4 km from SPIT",
   },
 ]
 
@@ -94,6 +178,33 @@ const bookingArea = document.getElementById("bookingArea")
 // form modal refs
 const formModal = document.getElementById("formModal")
 const listingForm = document.getElementById("listingForm")
+
+// Initialize dark mode from localStorage
+function initDarkMode() {
+  const savedTheme = localStorage.getItem("theme")
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+
+  if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    document.documentElement.setAttribute("data-theme", "dark")
+  }
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+  const currentTheme = document.documentElement.getAttribute("data-theme")
+  const newTheme = currentTheme === "dark" ? "light" : "dark"
+
+  if (newTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark")
+    localStorage.setItem("theme", "dark")
+  } else {
+    document.documentElement.removeAttribute("data-theme")
+    localStorage.setItem("theme", "light")
+  }
+}
+
+// Initialize dark mode on page load
+initDarkMode()
 
 let currentGenderFilter = ""
 
@@ -160,17 +271,24 @@ function prettyKind(k) {
 
 // --- Search & filters ---
 function applyFilters() {
-  const q = qEl.value.trim().toLowerCase()
+  const searchQuery = qEl.value.toLowerCase()
   const kind = kindEl.value
   const min = Number(document.getElementById("minPrice").value || 0)
   const max = Number(document.getElementById("maxPrice").value || 0)
 
   const filtered = listingsData.filter((l) => {
-    const matchesQ = !q || (l.title + " " + l.location + " " + l.desc).toLowerCase().includes(q)
+    const matchesSearch =
+      !searchQuery ||
+      l.title.toLowerCase().includes(searchQuery) ||
+      l.location.toLowerCase().includes(searchQuery) ||
+      l.desc.toLowerCase().includes(searchQuery) ||
+      l.distance.toLowerCase().includes(searchQuery)
+
     const matchesKind = kind === "all" || l.kind === kind
     const matchesPrice = (!min || l.price >= min) && (!max || (l.price && l.price <= max))
     const matchesGender = !currentGenderFilter || l.gender === currentGenderFilter
-    return matchesQ && matchesKind && matchesPrice && matchesGender
+
+    return matchesSearch && matchesKind && matchesPrice && matchesGender
   })
 
   const sortVal = sortEl.value
@@ -183,9 +301,9 @@ function applyFilters() {
 
 document.getElementById("applyFilters").addEventListener("click", applyFilters)
 document.getElementById("resetFilters").addEventListener("click", () => {
+  qEl.value = ""
   document.getElementById("minPrice").value = ""
   document.getElementById("maxPrice").value = ""
-  qEl.value = ""
   kindEl.value = "all"
   currentGenderFilter = ""
   document.querySelectorAll("[data-gender]").forEach((btn) => btn.classList.remove("active"))
@@ -193,9 +311,6 @@ document.getElementById("resetFilters").addEventListener("click", () => {
   document.querySelector('#categoryList .chip[data-kind="all"]').classList.add("active")
   applyFilters()
 })
-qEl.addEventListener("input", applyFilters)
-kindEl.addEventListener("change", applyFilters)
-sortEl.addEventListener("change", applyFilters)
 
 // category chips
 document.querySelectorAll("#categoryList .chip").forEach((btn) => {
@@ -320,5 +435,10 @@ document
 // small helpers
 document.getElementById("year").textContent = new Date().getFullYear()
 
-// initial call
-applyFilters()
+// Event listeners for real-time search and sorting
+qEl.addEventListener("input", applyFilters)
+sortEl.addEventListener("change", applyFilters)
+
+document.addEventListener("DOMContentLoaded", () => {
+  applyFilters() // Show all listings initially
+})
