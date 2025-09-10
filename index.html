@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <div class="app">
+  <div class="app" style="overflow: hidden;">
 
     <!-- Header Row: Logo + Action Buttons -->
     <div class="header-row">
@@ -30,14 +30,22 @@
     <!-- Filters Section - Now in Center -->
     <div class="filters-section">
       <!-- Search Row -->
-      <div class="search-row">
-        <div class="search">
+      <div class="search-row" style="width: 100%;">
+        <div class="search" style="width: 80%;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path d="M21 21l-4.35-4.35" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round"
               stroke-linejoin="round"></path>
             <circle cx="11" cy="11" r="6" stroke="#5DADE2" stroke-width="1.6"></circle>
           </svg>
-          <input id="q" placeholder="Search city, area, college..." />
+          <!-- Updated search input with college autocomplete -->
+          <div class="college-search-container">
+            <input id="collegeSearch" placeholder="Search your college..." autocomplete="off" />
+            <div id="collegeDropdown" class="college-dropdown"></div>
+          </div>
+          <!-- Added location dropdown for stations -->
+          <select id="locationSelect" class="location-select">
+            <option value="">Select Station</option>
+          </select>
           <select id="kind">
             <option value="all">All Types</option>
             <option value="pg_boys">Boys PG</option>
@@ -186,7 +194,7 @@
           <div style="margin-top:8px" class="form-row">
             <div class="field">
               <label>Location</label>
-              <input name="location" required placeholder="e.g. Malviya Nagar, New Delhi" />
+              <input name="location" required placeholder="e.g. Dadar, Borivali" />
             </div>
             <div class="field">
               <label>Monthly Rent (₹)</label>
