@@ -95,6 +95,8 @@ const listingsData = [
     gender: "boys",
     amenities: ["WiFi", "AC", "Meals", "Laundry", "Security"],
     distance: "0.8 km from IIT Bombay",
+    college: "IIT Bombay",
+    station: "Kanjurmarg / Vikhroli",
   },
   {
     id: 2,
@@ -107,6 +109,8 @@ const listingsData = [
     gender: "girls",
     amenities: ["WiFi", "Meals", "Security", "Study Room", "CCTV"],
     distance: "0.5 km from VJTI",
+    college: "VJTI",
+    station: "Matunga / Dadar",
   },
   {
     id: 3,
@@ -119,6 +123,8 @@ const listingsData = [
     gender: "boys",
     amenities: ["WiFi", "AC", "Meals", "Gym", "Study Area"],
     distance: "0.3 km from NMIMS",
+    college: "NMIMS Mukesh Patel",
+    station: "Vile Parle Station",
   },
   {
     id: 4,
@@ -131,6 +137,8 @@ const listingsData = [
     gender: "girls",
     amenities: ["WiFi", "AC", "Pool", "Gym", "Spa", "Meals"],
     distance: "0.7 km from TSEC",
+    college: "Thadomal Shahani Engineering College (TSEC)",
+    station: "Bandra Station (W)",
   },
   {
     id: 5,
@@ -143,6 +151,8 @@ const listingsData = [
     gender: "boys",
     amenities: ["WiFi", "Meals", "Study Room", "Security"],
     distance: "0.5 km from KC College of Engineering",
+    college: "KC College of Engineering",
+    station: "Thane Station",
   },
   {
     id: 6,
@@ -155,6 +165,8 @@ const listingsData = [
     gender: "girls",
     amenities: ["WiFi", "Mess", "Library", "Security", "CCTV"],
     distance: "0.4 km from SPIT",
+    college: "SPIT",
+    station: "Andheri Station",
   },
 ]
 
@@ -162,7 +174,9 @@ const listingsData = [
 const listingsEl = document.getElementById("listings")
 const resultsInfo = document.getElementById("resultsInfo")
 const yearEl = document.getElementById("year")
-const qEl = document.getElementById("q")
+const collegeSearchEl = document.getElementById("collegeSearch")
+const collegeDropdownEl = document.getElementById("collegeDropdown")
+const locationSelectEl = document.getElementById("locationSelect")
 const kindEl = document.getElementById("kind")
 const sortEl = document.getElementById("sort")
 
@@ -179,34 +193,137 @@ const bookingArea = document.getElementById("bookingArea")
 const formModal = document.getElementById("formModal")
 const listingForm = document.getElementById("listingForm")
 
-// Initialize dark mode from localStorage
-function initDarkMode() {
-  const savedTheme = localStorage.getItem("theme")
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-
-  if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-    document.documentElement.setAttribute("data-theme", "dark")
-  }
-}
-
-// Toggle dark mode
-function toggleDarkMode() {
-  const currentTheme = document.documentElement.getAttribute("data-theme")
-  const newTheme = currentTheme === "dark" ? "light" : "dark"
-
-  if (newTheme === "dark") {
-    document.documentElement.setAttribute("data-theme", "dark")
-    localStorage.setItem("theme", "dark")
-  } else {
-    document.documentElement.removeAttribute("data-theme")
-    localStorage.setItem("theme", "light")
-  }
-}
-
-// Initialize dark mode on page load
-initDarkMode()
+let selectedCollege = null
+let currentHighlightIndex = -1
 
 let currentGenderFilter = ""
+
+function initializeLocationDropdown() {
+  locationSelectEl.innerHTML = '<option value="">Select Station</option>'
+  mumbaiData.stations.forEach((station) => {
+    const option = document.createElement("option")
+    option.value = station
+    option.textContent = station
+    locationSelectEl.appendChild(option)
+  })
+}
+
+function setupCollegeSearch() {
+  collegeSearchEl.addEventListener("input", handleCollegeSearch)
+  collegeSearchEl.addEventListener("keydown", handleCollegeKeydown)
+  collegeSearchEl.addEventListener("blur", hideCollegeDropdown)
+  collegeSearchEl.addEventListener("focus", handleCollegeSearch)
+}
+
+function handleCollegeSearch() {
+  const query = collegeSearchEl.value.toLowerCase().trim()
+
+  if (query.length === 0) {
+    hideCollegeDropdown()
+    selectedCollege = null
+    return
+  }
+
+  const filteredColleges = mumbaiData.colleges.filter((college) => {
+    const nameMatch = college.name.toLowerCase().includes(query)
+    const areaMatch = college.area.toLowerCase().includes(query)
+    const stationMatch = college.station.toLowerCase().includes(query)
+    // Also check for partial matches at word boundaries
+    const words = query.split(" ")
+    const wordMatch = words.some(
+      (word) => college.name.toLowerCase().includes(word) || college.area.toLowerCase().includes(word),
+    )
+    return nameMatch || areaMatch || stationMatch || wordMatch
+  })
+
+  showCollegeDropdown(filteredColleges)
+}
+
+function showCollegeDropdown(colleges) {
+  collegeDropdownEl.innerHTML = ""
+  currentHighlightIndex = -1
+
+  if (colleges.length === 0) {
+    hideCollegeDropdown()
+    return
+  }
+
+  colleges.forEach((college, index) => {
+    const option = document.createElement("div")
+    option.className = "college-option"
+    option.innerHTML = `
+      <div class="college-name">${college.name}</div>
+      <div class="college-area">${college.area} • ${college.station}</div>
+    `
+
+    option.addEventListener("mousedown", (e) => {
+      e.preventDefault() // Prevent blur event
+      selectCollege(college)
+    })
+
+    collegeDropdownEl.appendChild(option)
+  })
+
+  collegeDropdownEl.classList.add("show")
+}
+
+function hideCollegeDropdown() {
+  setTimeout(() => {
+    collegeDropdownEl.classList.remove("show")
+  }, 150)
+}
+
+function selectCollege(college) {
+  selectedCollege = college
+  collegeSearchEl.value = college.name
+  hideCollegeDropdown()
+
+  locationSelectEl.innerHTML = '<option value="">Select Station</option>'
+
+  const nearbyStations = getNearbyStations(college)
+  nearbyStations.forEach((station, index) => {
+    const option = document.createElement("option")
+    option.value = station
+    option.textContent = station
+    if (index === 0) {
+      option.selected = true // Auto-select the primary station
+    }
+    locationSelectEl.appendChild(option)
+  })
+
+  applyFilters()
+}
+
+function handleCollegeKeydown(e) {
+  const options = collegeDropdownEl.querySelectorAll(".college-option")
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault()
+    currentHighlightIndex = Math.min(currentHighlightIndex + 1, options.length - 1)
+    updateHighlight(options)
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault()
+    currentHighlightIndex = Math.max(currentHighlightIndex - 1, -1)
+    updateHighlight(options)
+  } else if (e.key === "Enter") {
+    e.preventDefault()
+    if (currentHighlightIndex >= 0 && options[currentHighlightIndex]) {
+      const collegeName = options[currentHighlightIndex].querySelector(".college-name").textContent
+      const college = mumbaiData.colleges.find((c) => c.name === collegeName)
+      if (college) {
+        selectCollege(college)
+      }
+    }
+  } else if (e.key === "Escape") {
+    hideCollegeDropdown()
+  }
+}
+
+function updateHighlight(options) {
+  options.forEach((option, index) => {
+    option.classList.toggle("highlighted", index === currentHighlightIndex)
+  })
+}
 
 // initial render
 function renderListings(data) {
@@ -271,24 +388,38 @@ function prettyKind(k) {
 
 // --- Search & filters ---
 function applyFilters() {
-  const searchQuery = qEl.value.toLowerCase()
+  const collegeQuery = collegeSearchEl.value.toLowerCase()
+  const selectedStation = locationSelectEl.value
   const kind = kindEl.value
   const min = Number(document.getElementById("minPrice").value || 0)
   const max = Number(document.getElementById("maxPrice").value || 0)
 
   const filtered = listingsData.filter((l) => {
-    const matchesSearch =
-      !searchQuery ||
-      l.title.toLowerCase().includes(searchQuery) ||
-      l.location.toLowerCase().includes(searchQuery) ||
-      l.desc.toLowerCase().includes(searchQuery) ||
-      l.distance.toLowerCase().includes(searchQuery)
+    const matchesCollege =
+      !collegeQuery ||
+      l.title.toLowerCase().includes(collegeQuery) ||
+      l.location.toLowerCase().includes(collegeQuery) ||
+      l.desc.toLowerCase().includes(collegeQuery) ||
+      l.distance.toLowerCase().includes(collegeQuery) ||
+      (l.college && l.college.toLowerCase().includes(collegeQuery)) ||
+      // Check if any word in the query matches
+      collegeQuery
+        .split(" ")
+        .some(
+          (word) =>
+            l.title.toLowerCase().includes(word) ||
+            l.location.toLowerCase().includes(word) ||
+            (l.college && l.college.toLowerCase().includes(word)),
+        )
+
+    const matchesStation =
+      !selectedStation || (l.station && l.station.includes(selectedStation.replace(" Station", "")))
 
     const matchesKind = kind === "all" || l.kind === kind
     const matchesPrice = (!min || l.price >= min) && (!max || (l.price && l.price <= max))
     const matchesGender = !currentGenderFilter || l.gender === currentGenderFilter
 
-    return matchesSearch && matchesKind && matchesPrice && matchesGender
+    return matchesCollege && matchesStation && matchesKind && matchesPrice && matchesGender
   })
 
   const sortVal = sortEl.value
@@ -301,7 +432,9 @@ function applyFilters() {
 
 document.getElementById("applyFilters").addEventListener("click", applyFilters)
 document.getElementById("resetFilters").addEventListener("click", () => {
-  qEl.value = ""
+  collegeSearchEl.value = ""
+  locationSelectEl.value = ""
+  selectedCollege = null
   document.getElementById("minPrice").value = ""
   document.getElementById("maxPrice").value = ""
   kindEl.value = "all"
@@ -436,9 +569,216 @@ document
 document.getElementById("year").textContent = new Date().getFullYear()
 
 // Event listeners for real-time search and sorting
-qEl.addEventListener("input", applyFilters)
+locationSelectEl.addEventListener("change", applyFilters)
 sortEl.addEventListener("change", applyFilters)
 
 document.addEventListener("DOMContentLoaded", () => {
+  initializeLocationDropdown()
+  setupCollegeSearch()
   applyFilters() // Show all listings initially
 })
+
+function getNearbyStations(college) {
+  const collegeStation = college.station
+  const allStations = mumbaiData.stations
+
+  // Find the main station and add nearby ones
+  const nearbyStations = [collegeStation]
+
+  const stationMappings = {
+    "Bandra Station (W)": [
+      "Bandra Station",
+      "Khar Station",
+      "Santa Cruz Station",
+      "Mahim Station",
+      "Andheri Station",
+      "Vile Parle Station",
+      "Jogeshwari Station",
+      "Dadar Station",
+      "Matunga Station",
+      "Goregaon Station",
+    ],
+    "Kanjurmarg / Vikhroli": [
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Thane Station",
+      "Dadar Station",
+      "Matunga Station",
+      "Chembur Station",
+      "Andheri Station",
+      "Goregaon Station",
+    ],
+    "Matunga / Dadar": [
+      "Matunga Station",
+      "Dadar Station",
+      "Kurla Station",
+      "Byculla Station",
+      "Vidyavihar Station",
+      "Chembur Station",
+      "Kanjurmarg Station",
+      "Thane Station",
+      "Andheri Station",
+      "Santa Cruz Station",
+    ],
+    "Vile Parle Station": [
+      "Vile Parle Station",
+      "Andheri Station",
+      "Santa Cruz Station",
+      "Khar Station",
+      "Jogeshwari Station",
+      "Bandra Station",
+      "Goregaon Station",
+      "Malad Station",
+      "Kandivali Station",
+      "Dadar Station",
+    ],
+    "Andheri Station": [
+      "Andheri Station",
+      "Vile Parle Station",
+      "Jogeshwari Station",
+      "Goregaon Station",
+      "Santa Cruz Station",
+      "Khar Station",
+      "Bandra Station",
+      "Malad Station",
+      "Kandivali Station",
+      "Borivali Station",
+    ],
+    "Vidyavihar Station": [
+      "Vidyavihar Station",
+      "Kurla Station",
+      "Matunga Station",
+      "Dadar Station",
+      "Kanjurmarg Station",
+      "Chembur Station",
+      "Thane Station",
+      "Vikhroli Station",
+      "Byculla Station",
+      "Andheri Station",
+    ],
+    "Chembur Station": [
+      "Chembur Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Dadar Station",
+      "Byculla Station",
+      "Matunga Station",
+      "Kanjurmarg Station",
+      "Thane Station",
+      "Vikhroli Station",
+      "Andheri Station",
+    ],
+    "Thane Station": [
+      "Thane Station",
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Kopar Khairane Station",
+      "Vidyavihar Station",
+      "Nerul Station",
+      "Kharghar Station",
+      "Dadar Station",
+      "Matunga Station",
+    ],
+    "Borivali Station": [
+      "Borivali Station",
+      "Kandivali Station",
+      "Malad Station",
+      "Goregaon Station",
+      "Andheri Station",
+      "Jogeshwari Station",
+      "Vile Parle Station",
+      "Santa Cruz Station",
+      "Vasai Road Station",
+      "Khar Station",
+    ],
+    "Byculla Station": [
+      "Byculla Station",
+      "Dadar Station",
+      "Matunga Station",
+      "Chembur Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Kanjurmarg Station",
+      "Thane Station",
+      "Andheri Station",
+      "Santa Cruz Station",
+    ],
+    "Panvel Station": [
+      "Panvel Station",
+      "Kharghar Station",
+      "Nerul Station",
+      "Kopar Khairane Station",
+      "Thane Station",
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Dadar Station",
+    ],
+    "Kharghar Station": [
+      "Kharghar Station",
+      "Panvel Station",
+      "Nerul Station",
+      "Kopar Khairane Station",
+      "Thane Station",
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Dadar Station",
+    ],
+    "Vasai Road Station": [
+      "Vasai Road Station",
+      "Borivali Station",
+      "Kandivali Station",
+      "Malad Station",
+      "Goregaon Station",
+      "Andheri Station",
+      "Jogeshwari Station",
+      "Vile Parle Station",
+      "Santa Cruz Station",
+      "Khar Station",
+    ],
+    "Nerul Station": [
+      "Nerul Station",
+      "Kharghar Station",
+      "Panvel Station",
+      "Kopar Khairane Station",
+      "Thane Station",
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Dadar Station",
+    ],
+    "Kurla Station": [
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Chembur Station",
+      "Dadar Station",
+      "Matunga Station",
+      "Kanjurmarg Station",
+      "Thane Station",
+      "Vikhroli Station",
+      "Byculla Station",
+      "Andheri Station",
+    ],
+    "Kopar Khairane Station": [
+      "Kopar Khairane Station",
+      "Nerul Station",
+      "Kharghar Station",
+      "Thane Station",
+      "Panvel Station",
+      "Kanjurmarg Station",
+      "Vikhroli Station",
+      "Kurla Station",
+      "Vidyavihar Station",
+      "Dadar Station",
+    ],
+  }
+
+  return stationMappings[collegeStation] || [collegeStation]
+}
